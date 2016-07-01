@@ -4,32 +4,15 @@
 		<title>Maps Index</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
-		<style>
-			body, html {
-				height: 100%;
-			}
-			#map {
-				height: 100%;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	</head>
 	<body>
 		<div id="map"></div>
-
-		<script>
-			var map;
-			function initMap() {
-				// initMap is a constructor function that creates a map background.
-				map = new google.maps.Map(document.getElementById('map'), {
-					center: {lat: 40.678, lng: -73.944},
-					zoom: 12
-				});
-			}
-		</script>
-
-		<script 
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8&callback=initMap" async defer >
-		</script>
+		<script async defer
+      		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8&callback=initMap">
+    	</script>
+    	<script src="js/init.js"></script>
 		<!-- <script type='text/javascript' src='js/knockout-3.4.0.js' async></script> -->
 	</body>
 </html>
