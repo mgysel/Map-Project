@@ -1,8 +1,3 @@
-body, html {
+.fullwidth {
 	height: 100%;
-}
-
-#map {
-	height: 100%;
-	width: 80%;
 }
