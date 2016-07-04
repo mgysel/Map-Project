@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html class="fullwidth">
+	<head>
+		<title>Maps Index</title>
+		<meta name="viewport" content="initial-scale=1.0">
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body class="fullwidth">
+		<div class="fullwidth" class="container-fluid">
+			<div class="row fullwidth">
+				<div id="list" class="col-md-3 fullwidth">
+					<form id="form">
+						<input type="search" id="form-value" placeholder="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete = "off">
+						<!-- <input type="submit" value="Submit"> -->
+					</form>
+					<ul id="titles" data-bind="template: { name:'location', foreach:locations }"></ul>
+					<script type="text/html" id="location">
+						<li data-bind="text: name"></li>
+					</script>
+				</div>
+
+				<div id="map" class="col-md-9 fullwidth"></div>
+				<script async defer
+      				src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8&callback=initMap">
+    			</script>
+    			<script src='js/knockout-3.4.0.js'></script>
+    			<script src="js/map1.js" async></script>
+			</div>
+		</div>
+	</body>
+</html>
