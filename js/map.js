@@ -93,8 +93,16 @@ var viewModel = function() {
 	// Function that highlights text when it is clicked and makes the
 	// corresponding marker bounce.
 	self.bounce = function() {
-		model.locations[0].marker.setAnimation(google.maps.Animation.BOUNCE);
-		setTimeout(function(){ model.locations[0].marker.setAnimation(null); }, 700);
+		// Sort through all of the model location names.
+		for (var i=0; i<modlength; i++) {
+			// If the model location name is the same as the name of the
+			// li clicked on, the marker will bounce once.
+			if (event.srcElement.innerHTML == model.locations[i].name) {
+				var self = model.locations[i].marker;
+				self.setAnimation(google.maps.Animation.BOUNCE);
+				setTimeout(function(){ self.setAnimation(null); }, 700);
+			};
+		};
 	};
 };
 
