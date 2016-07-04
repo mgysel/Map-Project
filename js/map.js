@@ -32,7 +32,13 @@ var viewModel = function() {
 			map: self.map,
 			position: model.locations[i].position,
 			animation: google.maps.Animation.DROP
-		})
+		});
+		// Make each marker bounce when it is clicked.
+		model.locations[i].marker.addListener('click', function() {
+			var self = this;
+    		self.setAnimation(google.maps.Animation.BOUNCE);
+			setTimeout(function(){ self.setAnimation(null); }, 700);
+    	});
 	};
 
 	// Create an array to hold visible objects, all initial objects and
@@ -81,6 +87,14 @@ var viewModel = function() {
 		for (var i=0; i<self.visiblePlaces().length; i++) {
 			self.visiblePlaces()[i].marker.setVisible(true);
 		};
+	};
+
+	self.name = ko.observable('');
+	// Function that highlights text when it is clicked and makes the
+	// corresponding marker bounce.
+	self.bounce = function() {
+		model.locations[0].marker.setAnimation(google.maps.Animation.BOUNCE);
+		setTimeout(function(){ model.locations[0].marker.setAnimation(null); }, 700);
 	};
 };
 

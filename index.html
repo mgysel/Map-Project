@@ -15,7 +15,7 @@
 				<div id="list" class="col-md-3 fullwidth">
 					<input type="search" id="form-value" autocomplete="off" placeholder="search" data-bind="textInput: query, event: {keyup: filterMarkers}">
 					<ul id="titles" data-bind="foreach: visiblePlaces">
-						<li data-bind="text: name">
+						<li data-bind="text: name, click: $parent.bounce"></li>
 					</ul>
 				</div>
 
@@ -25,3 +25,5 @@
 		</div>
 	</body>
 </html>
+
+<!-- <li data-bind="text: name, click: $parent.highlight"></li> -->
