@@ -6,6 +6,8 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script src="js/jquery.js"></script>
+		<script src="js/jquery.jsonp.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8"></script>
 		<script src='js/knockout-3.4.0.js'></script>
 	</head>
@@ -13,6 +15,7 @@
 		<div class="fullwidth" class="container-fluid">
 			<div class="row fullwidth">
 				<div id="list" class="col-md-3 fullwidth">
+					<p id="error"></p>
 					<input type="search" id="form-value" autocomplete="off" placeholder="search" data-bind="textInput: query, event: {keyup: filterMarkers}">
 					<ul id="titles" data-bind="foreach: visiblePlaces">
 						<li data-bind="text: name, click: $parent.bounce"></li>
@@ -25,5 +28,3 @@
 		</div>
 	</body>
 </html>
-
-<!-- <li data-bind="text: name, click: $parent.highlight"></li> -->

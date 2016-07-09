@@ -1,18 +1,15 @@
 var model = {
 	// Names and lat/longs of map locations.
-	locations: [{name: "Brooklyn Heights Promenade", position: {lat: 40.6959, lng: -73.9979}},
-	{name: "Brooklyn Botanic Garden", position: {lat: 40.6689, lng: -73.9651}},
-	{name: "Brooklyn Bridge", position: {lat: 40.7061, lng: -73.9969}},
-	{name: "Golden Gate Park", position: {lat: 40.7829, lng: -73.9654}},
-	{name: "The High Line", position: {lat: 40.7480, lng: -74.0048}}],
+	locations: [{name: "Brooklyn Heights Promenade", position: {lat: 40.6959, lng: -73.9979}, venueID: '42377700f964a52024201fe3'},
+	{name: "Brooklyn Botanic Garden", position: {lat: 40.6689, lng: -73.9651}, venueID: '42717900f964a5206f211fe3'},
+	{name: "Brooklyn Bridge", position: {lat: 40.7061, lng: -73.9969}, venueID: '4a43bcb7f964a520bba61fe3'},
+	{name: "Golden Gate Park", position: {lat: 40.7829, lng: -73.9654}, venueID: '445e36bff964a520fb321fe3'},
+	{name: "The High Line", position: {lat: 40.7480, lng: -74.0048}, venueID: '40f1d480f964a5206a0a1fe3'}],
+	foursquareconfig: {apiKey: 'NJAHHABYCD2FWFRBKTORDSHJIL3FOQBYU5E5B12HBYNCCTQN',
+    					authUrl: 'https://foursquare.com/',
+    					apiUrl: 'https://api.foursquare.com/'}
 };
 
-// Place constructor function.
-// function Place(eachlocation) {
-// 	this.name = eachlocation.name;
-// 	this.position = eachlocation.position;
-// 	this.marker = null;
-// };
 
 var viewModel = function() {
 	var self = this;
@@ -26,20 +23,44 @@ var viewModel = function() {
 		zoom: 12
 	});
 
-	// Create markers for each location from the model data.
-	for (var i=0; i<modlength; i++) {
-		model.locations[i].marker = new google.maps.Marker({
-			map: self.map,
-			position: model.locations[i].position,
-			animation: google.maps.Animation.DROP
+	// Foursquare API request. Upon success, create markers for each location
+	// from the model data, make them bounce and for infowindows to pop up
+	// when clicked.
+	model.locations.forEach(function(location) {
+		// API request
+		$.ajax({
+			url: 'https://api.foursquare.com/v2/venues/'+ location.venueID +'?client_id=NJAHHABYCD2FWFRBKTORDSHJIL3FOQBYU5E5B12HBYNCCTQN&client_secret=WLQVWEN444HSVYNEIAFXSHI4E4P24XNVG5PMP0MVEEBEZHTP&v=20160706',
+			dataType: 'jsonp',
+			success: function(results) {
+				// Create each marker
+				location.marker = new google.maps.Marker({
+					map: self.map,
+					position: location.position,
+					clickable: true,
+					animation: google.maps.Animation.DROP
+				});
+				// Make infowindows
+				location.marker.info = new google.maps.InfoWindow({
+					content: location.name + ": " + results.response.venue.description
+				});
+				// Make each marker bounce when it is clicked.
+				location.marker.addListener('click', function() {
+					var markerself = this;
+					markerself.setAnimation(google.maps.Animation.BOUNCE);
+					setTimeout(function(){ markerself.setAnimation(null); }, 700);
+					// model.locations[i].marker.info.open(self.map, model.locations[i].marker);
+					markerself.info.open(self.map, markerself);
+				});
+			},
+			// Error handling
+			error: function (jqxhr, textStatus, error) {
+				document.getElementById("error").textContent = "Sorry friend, "
+				+ "there was an error grabbing data"
+			}
+			// location["description"] = data.response.venue.description;
 		});
-		// Make each marker bounce when it is clicked.
-		model.locations[i].marker.addListener('click', function() {
-			var self = this;
-    		self.setAnimation(google.maps.Animation.BOUNCE);
-			setTimeout(function(){ self.setAnimation(null); }, 700);
-    	});
-	};
+	});
+
 
 	// Create an array to hold visible objects, all initial objects and
 	// all objects that match the search name. This is an observable array
@@ -101,9 +122,12 @@ var viewModel = function() {
 				var self = model.locations[i].marker;
 				self.setAnimation(google.maps.Animation.BOUNCE);
 				setTimeout(function(){ self.setAnimation(null); }, 700);
+				self.info.open(this.map, model.locations[i].marker);
+
 			};
 		};
 	};
+
 };
 
 ko.applyBindings(new viewModel());
