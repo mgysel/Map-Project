@@ -1,3 +1,51 @@
 .fullwidth {
 	height: 100%;
 }
+
+#list {
+	/*Place list on top of map, position list*/
+	position: absolute;
+	z-index: 1;
+	top: 3%;
+	left: 3%;
+
+	/*Typical styling*/
+	border: 3px solid #000000;
+	border-radius: 10px;
+	background-color: rgba(255,255,255,.9)
+}
+
+#list ul {
+	/*Typical list item styling*/
+	margin: auto;
+	padding: 7px 20px;
+	list-style-type: none;
+}
+
+/*list font styling*/
+li {
+	font-family: "Helvetica", serif;
+	font-size: 16px;
+}
+
+/*margin for the input*/
+#form-value {
+	margin: 10px 20px 0 20px;
+}
+
+/*error styling*/
+#error {
+	margin: 10px;
+	font-size: 18px;
+}
+
+/*Make map/styled map button disappear*/
+.gm-style-iw {
+	position: absolute;
+	z-index:;
+}
+
+/*Make map/styled map button disappear*/
+.gm-style-mtc {
+	display: none;
+}
