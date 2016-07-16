@@ -282,7 +282,7 @@ var ViewModel = function() {
 		for (var i=0; i<modlength; i++) {
 			// If the model location name is the same as the name of the
 			// li clicked on, the marker will bounce once.
-			if (location == model.locations[i]) {
+			if (location === model.locations[i]) {
 				var self = model.locations[i].marker;
 				self.setAnimation(google.maps.Animation.BOUNCE);
 				setTimeout(function(){ self.setAnimation(null); }, 700);

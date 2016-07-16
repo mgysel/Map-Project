@@ -24,6 +24,11 @@
 		<script src="js/jquery.js"></script>
 		<script src='js/knockout-3.4.0.js'></script>
 		<script src="js/map.js"></script>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8&callback=initMap"></script>
+		<script>
+			handleError = function() {
+				alert ("Sorry friend, the map could not be loaded ;(");
+			}
+		</script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8&callback=initMap" onerror="handleError()"></script>
 	</body>
 </html>
