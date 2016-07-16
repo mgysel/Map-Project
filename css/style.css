@@ -1,4 +1,4 @@
-.fullwidth {
+.full-width {
 	height: 100%;
 }
 
@@ -42,7 +42,7 @@ li {
 /*Make map/styled map button disappear*/
 .gm-style-iw {
 	position: absolute;
-	z-index:;
+	z-index: 0;
 }
 
 /*Make map/styled map button disappear*/

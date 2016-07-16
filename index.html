@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html class="fullwidth">
+<html class="full-width">
 	<head>
 		<title>Maps Index</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
+		<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 		<link rel="stylesheet" href="css/bootstrap.css">
 		<link rel="stylesheet" href="css/style.css">
-		<script src="js/jquery.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8"></script>
-		<script src='js/knockout-3.4.0.js'></script>
 	</head>
-	<body class="fullwidth">
-		<div class="fullwidth container-fluid">
-			<div class="row fullwidth">
+	<body class="full-width">
+		<div class="full-width container-fluid">
+			<div class="row full-width">
 				<div id="list">
 					<p id="error"></p>
 					<input type="search" id="form-value" class="center-block" size=28 autocomplete="off" placeholder="search nyc parks" data-bind="textInput: query, event: {keyup: filterMarkers}">
@@ -20,9 +18,12 @@
 						<li data-bind="text: name, click: $parent.bounce"></li>
 					</ul>
 				</div>
-				<div id="map" class="fullwidth"></div>
-    			<script src="js/map.js" async></script>
+				<div id="map" class="full-width"></div>
 			</div>
 		</div>
+		<script src="js/jquery.js"></script>
+		<script src='js/knockout-3.4.0.js'></script>
+		<script src="js/map.js"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfpjf0yP232xaXmok5c17GIeAdBsnjOy8&callback=initMap"></script>
 	</body>
 </html>

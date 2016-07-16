@@ -28,9 +28,11 @@ var model = {
 		}
 	],
 
-	foursquareconfig: {apiKey: 'NJAHHABYCD2FWFRBKTORDSHJIL3FOQBYU5E5B12HBYNCCTQN',
-    					authUrl: 'https://foursquare.com/',
-    					apiUrl: 'https://api.foursquare.com/'},
+	foursquareconfig: {
+		apiKey: 'NJAHHABYCD2FWFRBKTORDSHJIL3FOQBYU5E5B12HBYNCCTQN',
+    	authUrl: 'https://foursquare.com/',
+    	apiUrl: 'https://api.foursquare.com/'
+    },
 
     styles: [
 		    {
@@ -139,9 +141,8 @@ var model = {
 };
 
 
-var viewModel = function() {
+var initMap = function() {
 	var self = this;
-
 	// For ease of use throughout ViewModel.
 	var modlength = model.locations.length;
 
@@ -160,66 +161,81 @@ var viewModel = function() {
 		}
 	});
 
+	// Associate the styled map with the MapTypeId
+	self.map.mapTypes.set('map_style', styledMap);
+	// Set the map to display
+	self.map.setMapTypeId('map_style');
+
 	self.map.addListener('click', function() {
 		for (var i=0; i<modlength; i++) {
 			model.locations[i].marker.info.close();
 		}
 	});
 
-	// Associate the styled map with the MapTypeId
-	self.map.mapTypes.set('map_style', styledMap);
-	// Set the map to display
-	self.map.setMapTypeId('map_style');
-
 	// Foursquare API request. Upon success, create markers for each location
 	// from the model data, make them bounce and for infowindows to pop up
 	// when clicked.
 	model.locations.forEach(function(location) {
+		// Create each marker
+		location.marker = new google.maps.Marker({
+			map: self.map,
+			position: location.position,
+			clickable: true,
+			animation: google.maps.Animation.DROP
+		});
+		// Make each marker bounce when it is clicked.
+		location.marker.addListener('click', function() {
+			var markerself = this;
+			self.map.setCenter(location.marker.getPosition());
+			markerself.setAnimation(google.maps.Animation.BOUNCE);
+			setTimeout(function(){ markerself.setAnimation(null); }, 700);
+			// model.locations[i].marker.info.open(self.map, model.locations[i].marker);
+			markerself.info.open(self.map, markerself);
+		});
+		location.marker.info = new google.maps.InfoWindow({});
 		// API request
 		$.ajax({
 			url: 'https://api.foursquare.com/v2/venues/'+ location.venueID +'?client_id=NJAHHABYCD2FWFRBKTORDSHJIL3FOQBYU5E5B12HBYNCCTQN&client_secret=WLQVWEN444HSVYNEIAFXSHI4E4P24XNVG5PMP0MVEEBEZHTP&v=20160706',
-			dataType: 'jsonp',
-			success: function(results) {
-				// Create each marker
-				location.marker = new google.maps.Marker({
-					map: self.map,
-					position: location.position,
-					clickable: true,
-					animation: google.maps.Animation.DROP
-				});
-				// Make infowindows
-				location.marker.info = new google.maps.InfoWindow({
-					content: '<strong>'+location.name+'</strong>: ' +
-					results.response.venue.description
-				});
-				// Make each marker bounce when it is clicked.
-				location.marker.addListener('click', function() {
-					var markerself = this;
-					markerself.setAnimation(google.maps.Animation.BOUNCE);
-					setTimeout(function(){ markerself.setAnimation(null); }, 700);
-					// model.locations[i].marker.info.open(self.map, model.locations[i].marker);
-					markerself.info.open(self.map, markerself);
-				});
-			},
-			// Error handling
-			error: function (jqxhr, textStatus, error) {
-				document.getElementById('error').textContent = 'Sorry friend, '
-				+ 'there was an error grabbing data'
-			}
+			dataType: 'jsonp'
+		}).done(function(results) {
+			// Make infowindows
+			var dataDes = results.response.venue.description;
+			var description = function() {
+				if (dataDes === undefined) {
+					return '<strong>' + location.name + '</strong>: ' +
+					'Sorry friend, this description is not available.';
+				} else {
+					return '<strong>' + location.name + '</strong>: ' +
+					dataDes;
+				}
+			}();
+			location.marker.info.setContent(description);
+		}).fail(function(jqXHR, textStatus) {
+			document.getElementById('error').textContent = 'Sorry friend, ' +
+			'there was an error grabbing data';
 		});
 	});
+	// Apply knockout bindings after map loads.
+	ko.applyBindings(new ViewModel());
+};
 
+
+var ViewModel = function() {
+	var self = this;
+	// For ease of use throughout ViewModel.
+	var modlength = model.locations.length;
 
 	// Create an array to hold visible objects, all initial objects and
 	// all objects that match the search name. This is an observable array
 	// so that any changes will be updated throughout the project.
+
 	self.visiblePlaces = ko.observableArray();
 
 	// Pushes all places to the visiblePlaces array, as all places should
 	// initially be visible.
 	for (var i=0; i<modlength; i++) {
 		self.visiblePlaces.push(model.locations[i]);
-	};
+	}
 
 	// Stores the user search result at all times. This is an observable so any
 	// changes will be tracked and then updated throughout the project.
@@ -249,33 +265,30 @@ var viewModel = function() {
 			if (thisPlace.name.toLowerCase().indexOf(search) >= 0) {
 				self.visiblePlaces.push(thisPlace);
 			}
-		};
+		}
 
 		// Turns the marker's visibility on for each place in the visible
 		// places array.
 		for (var i=0; i<self.visiblePlaces().length; i++) {
 			self.visiblePlaces()[i].marker.setVisible(true);
-		};
+		}
 	};
 
 	self.name = ko.observable('');
 	// Function that highlights text when it is clicked and makes the
 	// corresponding marker bounce.
-	self.bounce = function() {
+	self.bounce = function(location) {
 		// Sort through all of the model location names.
 		for (var i=0; i<modlength; i++) {
 			// If the model location name is the same as the name of the
 			// li clicked on, the marker will bounce once.
-			if (event.srcElement.innerHTML == model.locations[i].name) {
+			if (location == model.locations[i]) {
 				var self = model.locations[i].marker;
 				self.setAnimation(google.maps.Animation.BOUNCE);
 				setTimeout(function(){ self.setAnimation(null); }, 700);
 				self.info.open(this.map, model.locations[i].marker);
 
-			};
-		};
+			}
+		}
 	};
-
 };
-
-ko.applyBindings(new viewModel())
