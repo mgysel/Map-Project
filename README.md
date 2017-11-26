@@ -1,4 +1,4 @@
-# Map-Project
+# NYC-Parks
 
 ## Description
 Map-Project displays the location, name, and description of various parks in New York City. 
